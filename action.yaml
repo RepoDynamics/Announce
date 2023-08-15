@@ -41,6 +41,11 @@ runs:
         printf "\n\n$(cat ${{github.action_path}}/logo.txt)\n\n\n"
         echo -e "\033[1;30;48;2;106;245;120m 1. Initialize  "
 
+    - uses: actions/checkout@v3
+      with:
+        sparse-checkout: meta/requirements.txt
+        sparse-checkout-cone-mode: false
+
     - uses: actions/setup-python@v4
       with:
         python-version: '3.x'
