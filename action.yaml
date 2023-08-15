@@ -59,7 +59,7 @@ runs:
         echo "::group::Install RepoDynamics"
         pip install -r meta/requirements.txt
         echo "::endgroup::"
-        echo "::group::Installed packages"
+        echo -e "::group::\033[1;30;48;2;106;245;120mInstalled packages"
         pip list
         echo "::endgroup::"
 
