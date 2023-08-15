@@ -1,0 +1,86 @@
+name: 'RepoDynamics Announce'
+description: 'Dynamically update project announcements.'
+author: 'Armin Ariamajd'
+branding:
+  icon: file-text
+  color: blue
+
+
+inputs:
+
+  retention-days:
+    description: |
+      Number of days to keep the announcement before automatically removing it.
+      This input only applies to `check` mode.
+    default: 30
+    required: false
+
+  announcement:
+      description: |
+        Announcement message; supports HTML syntax (don't forget to escape with \).
+        To remove the current announcement, set to 'null'.
+      default: ""
+      required: false
+
+  description:
+    description: |
+      Description of the new announcement. This is used in the commit message.
+      This input must be provided when `announcement` is provided.
+    default: ""
+    required: false
+
+
+runs:
+  using: "composite"
+  steps:
+
+    - name: 'Initialize'
+      shell: bash
+      run: |
+        # Initialize
+        printf "\n\n$(cat ${{github.action_path}}/logo.txt)\n\n\n"
+        echo -e "\033[1;30;48;2;200;120;255m 1. Initialize  "
+
+    - uses: actions/setup-python@v4
+      with:
+        python-version: '3.x'
+
+    - name: 'Install RepoDynamics'
+      shell: bash
+      run: |
+        # Install RepoDynamics
+        echo "::group::Install RepoDynamics"
+        pip install -r ${{ github.action_path }}/requirements.txt
+        echo "::endgroup::"
+        echo "::group::Display environment"
+        pip list
+        echo "::endgroup::"
+
+    - name: 'Checkout Announcement Branch'
+      shell: bash
+      run: |
+        # Checkout Announcement Branch
+        rd-print "2. Checkout Announcement Branch" heading meta
+    - uses: actions/checkout@v3
+      with:
+        ref: announcements
+        fetch-depth: 0
+
+    - name: 'Run'
+      id: run
+      shell: bash
+      env:
+        RD_ANNOUNCE__RETENTION_DAYS: ${{ inputs.retention-days }}
+        RD_ANNOUNCE__ANNOUNCEMENT: ${{ inputs.announcement }}
+        RD_ANNOUNCE__DESCRIPTION: ${{ inputs.description }}
+      run: python -m repodynamics.actions announce
+
+    - name: 'Commit changes'
+      if: steps.run.outputs.commit_message != ''
+      # https://github.com/marketplace/actions/git-auto-commit
+      uses: stefanzweifel/git-auto-commit-action@v4
+      with:
+        commit_message: ${{ steps.run.outputs.commit_message }}
+        commit_user_name: 'RepoDynamics-Announce[action]'
+        commit_user_email: 'contact@repodynamics.org'
+        commit_author: 'RepoDynamics-Announce[action] <contact@repodynamics.org>'
