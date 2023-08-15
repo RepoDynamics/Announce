@@ -39,20 +39,22 @@ runs:
       run: |
         # Initialize
         printf "\n\n$(cat ${{github.action_path}}/logo.txt)\n\n\n"
-        echo -e "\033[1;30;48;2;200;120;255m 1. Initialize  "
+        echo -e "\033[1;30;48;2;106;245;120m 1. Initialize  "
 
     - uses: actions/setup-python@v4
       with:
         python-version: '3.x'
+        cache: 'pip'
+        cache-dependency-path: meta/requirements.txt
 
     - name: 'Install RepoDynamics'
       shell: bash
       run: |
-        # Install RepoDynamics
+        # Install requirements
         echo "::group::Install RepoDynamics"
         pip install -r ${{ github.action_path }}/requirements.txt
         echo "::endgroup::"
-        echo "::group::Display environment"
+        echo "::group::Installed packages"
         pip list
         echo "::endgroup::"
 
@@ -60,7 +62,7 @@ runs:
       shell: bash
       run: |
         # Checkout Announcement Branch
-        rd-print "2. Checkout Announcement Branch" heading meta
+        rd-print "2. Checkout Announcement Branch" heading announce
     - uses: actions/checkout@v3
       with:
         ref: announcements
@@ -73,7 +75,9 @@ runs:
         RD_ANNOUNCE__RETENTION_DAYS: ${{ inputs.retention-days }}
         RD_ANNOUNCE__ANNOUNCEMENT: ${{ inputs.announcement }}
         RD_ANNOUNCE__DESCRIPTION: ${{ inputs.description }}
-      run: python -m repodynamics.actions announce
+      run: |
+        # Run RepoDynamics Announce
+        python -m repodynamics.actions announce
 
     - name: 'Commit changes'
       if: steps.run.outputs.commit_message != ''
