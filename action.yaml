@@ -57,7 +57,7 @@ runs:
       run: |
         # Install requirements
         echo "::group::Install RepoDynamics"
-        pip install -r ${{ github.action_path }}/requirements.txt
+        pip install -r meta/requirements.txt
         echo "::endgroup::"
         echo "::group::Installed packages"
         pip list
