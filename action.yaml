@@ -56,24 +56,21 @@ runs:
       shell: bash
       run: |
         # Install requirements
-        echo "::group::Install RepoDynamics"
+        echo -e "::group::\033[1;38;2;0;162;255mInstall RepoDynamics"
         pip install -r meta/requirements.txt
         echo "::endgroup::"
-        echo -e "::group::\033[1;30;48;2;106;245;120mInstalled packages"
+        echo -e "::group::\033[1;38;2;0;162;255mInstalled packages"
         pip list
         echo "::endgroup::"
 
     - name: 'Checkout Announcement Branch'
-      shell: bash
-      run: |
-        # Checkout Announcement Branch
-        rd-print "2. Checkout Announcement Branch" heading announce
-    - uses: actions/checkout@v3
+      uses: actions/checkout@v3
       with:
         ref: announcements
         fetch-depth: 0
 
-    - name: 'Run'
+
+    - name: 'Run Action'
       id: run
       shell: bash
       env:
@@ -82,6 +79,7 @@ runs:
         RD_ANNOUNCE__DESCRIPTION: ${{ inputs.description }}
       run: |
         # Run RepoDynamics Announce
+        echo -e "\033[1;30;48;2;0;162;255m 2. Execute RepoDynamics Announce "
         python -m repodynamics.actions announce
 
     - name: 'Commit changes'
