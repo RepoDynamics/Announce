@@ -67,7 +67,6 @@ runs:
       uses: actions/checkout@v3
       with:
         ref: announcement
-        fetch-depth: 0
 
     - shell: bash
       run: ls -la
