@@ -62,11 +62,13 @@ runs:
         echo -e "::group::\033[1;38;2;0;162;255mInstalled packages"
         pip list
         echo "::endgroup::"
+        git sparse-checkout disable
 
     - name: 'Checkout Announcement Branch'
       uses: actions/checkout@v3
       with:
         ref: announcement
+        fetch-depth: 0
 
     - shell: bash
       run: ls -la
