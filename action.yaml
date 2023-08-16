@@ -91,11 +91,11 @@ runs:
         python -m repodynamics.actions announce
 
     - name: 'Commit changes'
-      if: steps.run.outputs.commit_message != ''
+      if: env.COMMIT_MESSAGE != ''
       # https://github.com/marketplace/actions/git-auto-commit
       uses: stefanzweifel/git-auto-commit-action@v4
       with:
-        commit_message: ${{ steps.run.outputs.commit_message }}
+        commit_message: ${{ env.COMMIT_MESSAGE }}
         commit_user_name: 'RepoDynamics-Announce[action]'
         commit_user_email: 'contact@repodynamics.org'
         commit_author: 'RepoDynamics-Announce[action] <contact@repodynamics.org>'
