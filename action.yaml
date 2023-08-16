@@ -69,6 +69,13 @@ runs:
         ref: announcement
         fetch-depth: 0
 
+    - shell: bash
+      run: ls -la
+    - shell: python
+      run: |
+        from pathlib import Path
+        print(Path.cwd())
+        print(list(Path.cwd().glob("**/*.*")))
 
     - name: 'Run Action'
       id: run
